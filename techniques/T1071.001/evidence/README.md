@@ -21,12 +21,18 @@ Sysmon registra la creación de un archivo temporal por parte de powershell.exe 
 
 ![Sysmon FileCreated](img/03_sysmon_filecreated.png)
 
-### 4. Detección en Wazuh
+### 4. Actividad de red (Wireshark)
+El análisis del tráfico capturado muestra múltiples solicitudes HTTP tipo `POST /beacon`, confirmando un patrón de comunicación periódica típico de un canal de Command and Control
+sobre protocolo web.
+
+![Wireshark](img/04_wireshark_activity.png)
+
+### 5. Detección en Wazuh
 La regla personalizada en Wazuh dispara una alerta correlacionando
 proceso, comando y User-Agent anómalo, detectando directamente
 la técnica **T1071.001**.
 
-![Wazuh Alert](img/04_wazuh_alert.png)
+![Wazuh Alert](img/05_wazuh_alert.png)
 
 ### Conclusión
 La correlación entre telemetría de host, logs de PowerShell y SIEM permitió
