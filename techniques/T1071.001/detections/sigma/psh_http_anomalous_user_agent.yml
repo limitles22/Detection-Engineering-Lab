@@ -27,8 +27,8 @@ detection:
       - 'Invoke-RestMethod'
       - 'iwr'
       - 'irm'
-      - 'curl'  # Alias común
-      - 'wget'  # Alias común
+      - 'curl' 
+      - 'wget' 
 
   selection_user_agent:
     CommandLine|contains:
@@ -38,9 +38,9 @@ detection:
       - '*<|>*'
       - 'Metasploit'
       - 'Nmap'
-      - 'User-Agent "curl' # Busca explícitamente el parámetro, no solo la palabra
-      - 'User-Agent "wget' # Busca explícitamente el parámetro
-      - 'User-Agent "Mozilla/4.0"' # Muy viejo, comúnmente usado por malware antiguo
+      - 'User-Agent "curl' 
+      - 'User-Agent "wget' 
+      - 'User-Agent "Mozilla/4.0"' 
 
   condition: selection_image and selection_command and selection_user_agent
 
