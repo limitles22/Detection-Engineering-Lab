@@ -1,54 +1,35 @@
-T1071.001 – Application Layer Protocol: Web Protocols
-Descripción
+## T1071.001 – Application Layer Protocol: Web Protocols
 
-La técnica T1071.001 consiste en el uso de protocolos web (HTTP/HTTPS) como canal de Command and Control (C2), aprovechando tráfico legítimo para camuflar la comunicación maliciosa.
+### Descripción
+Esta técnica consiste en el uso de protocolos web (HTTP/HTTPS) como canal de **Command and Control (C2)**, buscando camuflar el tráfico malicioso dentro de comunicaciones web legítimas.
 
-Emulación
+### Emulación
+- **Herramienta:** MITRE CALDERA  
+- **Sistema objetivo:** Endpoint Windows  
+- **Ejecución:** PowerShell como LOLBIN  
+- **Comportamiento:** Comunicación HTTP saliente utilizando User-Agents anómalos  
 
-Herramienta: MITRE CALDERA
+### Telemetría observada
 
-Plataforma: Windows
+#### Sysmon
+- Event ID 1 – Process Creation  
+- Event ID 3 – Network Connection  
+- Event ID 11 – File Creation  
 
-Uso de PowerShell como LOLBIN
+#### PowerShell – Operational Logs
+- Event ID 40962 – Engine Start  
+- Event ID 4103 – Command Invocation  
+- Event ID 4104 – Script Block Logging  
 
-Comunicación HTTP saliente iniciada desde el endpoint
+#### Red
+- Solicitudes HTTP GET en texto claro  
+- Uso de User-Agents no estándar  
 
-Uso de User-Agents anómalos para eludir detecciones básicas
+### Detección
+Se diseñó una regla Sigma enfocada en:
+- Ejecución de comandos web desde PowerShell  
+- Presencia de User-Agents anómalos  
+- Contexto del proceso y línea de comandos  
 
-Telemetría observada
-
-Sysmon
-
-Event ID 1 – Process Creation
-
-Event ID 3 – Network Connection
-
-Event ID 11 – File Creation
-
-PowerShell Operational Logs
-
-Event ID 40962 – Engine Start
-
-Event ID 4103 – Command Invocation
-
-Event ID 4104 – Script Block Logging
-
-Red
-
-Tráfico HTTP GET en texto claro
-
-User-Agent no estándar asociado a la ejecución de PowerShell
-
-Detección
-
-Se diseñó una regla Sigma basada en comportamiento, enfocada en:
-
-Ejecución de comandos web desde PowerShell
-
-Presencia de User-Agents poco comunes
-
-Contexto del proceso y línea de comandos
-
-Resultado
-
-La detección logró identificar directamente el canal de C2 sobre HTTP, sin depender únicamente de artefactos secundarios, validando la efectividad de un enfoque basado en comportamiento.
+### Resultado
+La detección permitió identificar directamente el uso de HTTP como canal de C2 durante la ejecución, demostrando la efectividad de detecciones basadas en comportamiento y no únicamente en artefactos secundarios.
