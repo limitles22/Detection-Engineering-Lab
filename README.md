@@ -27,6 +27,6 @@ Las técnicas son emuladas utilizando **MITRE CALDERA** y validadas mediante la 
 ## Técnicas analizadas
 
 - **T1071.001** – Application Layer Protocol: Web Protocols  
-  
+  - Variante analizada: PowerShell (LOLBIN)
 
 > Este repositorio está orientado a fines **defensivos y educativos**, y todo el contenido se ejecuta en entornos de laboratorio controlados.
