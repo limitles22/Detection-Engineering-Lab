@@ -48,7 +48,7 @@ Este evento confirma definitivamente la **comunicación de red real**. Demuestra
 
 
 
-## **PowerShell – Windows Event Log
+## PowerShell – Windows Event Log
 
 Además de Sysmon, la técnica **T1071.001** dejó huellas claras en los **PowerShell Operational Logs**, demostrando que este tipo de comunicación también puede detectarse **solo con logs nativos de Windows**.
 
