@@ -22,8 +22,11 @@ Esta técnica consiste en el uso de protocolos web (HTTP/HTTPS) como canal de **
 - Event ID 4104 – Script Block Logging  
 
 #### Red
-- Solicitudes HTTP GET en texto claro  
-- Uso de User-Agents no estándar  
+- Tráfico HTTP observado mediante **Wireshark**
+- Solicitudes HTTP GET en texto claro hacia infraestructura C2
+- Uso de **User-Agents** no estándar
+- Identificación de un **patrón de beaconing** (intervalos regulares de comunicación)
+ 
 
 ### Detección
 Se diseñó una regla Sigma enfocada en:
