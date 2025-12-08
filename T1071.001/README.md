@@ -48,7 +48,7 @@ Este evento confirma definitivamente la **comunicación de red real**. Demuestra
 
 
 
-## **PowerShell – Windows Event Log**
+## **PowerShell – Windows Event Log
 
 Además de Sysmon, la técnica **T1071.001** dejó huellas claras en los **PowerShell Operational Logs**, demostrando que este tipo de comunicación también puede detectarse **solo con logs nativos de Windows**.
 
@@ -78,7 +78,7 @@ Para complementar la visibilidad en host, capturamos tráfico de red durante la 
 
 
 
-## **Correlación**
+## Correlación
 
 Al analizar en conjunto las distintas fuentes de telemetría, se puede reconstruir la ejecución de la técnica **T1071.001**.
 
@@ -97,7 +97,7 @@ https://github.com/limitles22/Detection-Engineering-Lab/blob/main/T1071.001/sigm
 
 Esta regla Sigma apunta a un comportamiento bastante típico pero fácil de pasar por alto: **PowerShell usando HTTP con User-Agents raros**. No busca una herramienta específica ni una URL concreta, sino la **combinación peligrosa**: PowerShell ejecutando comandos web (`Invoke-WebRequest`, `iwr`, `curl`, etc.) y, además, setear User-Agents que no son normales para scripts legítimos. La idea es detectar **comunicación de C2 camuflada como tráfico web común**, justo lo que define T1071.001. Es una regla pensada para dar **visibilidad temprana**
 
-**Resultado**:
+Resultado:
 
 - La regla **detectó correctamente** la ejecución de PowerShell usando `Invoke-WebRequest`.
 - Se identificaron **User-Agents anómalos** definidos en la línea de comandos.
