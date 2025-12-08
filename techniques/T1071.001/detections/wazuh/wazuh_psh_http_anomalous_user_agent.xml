@@ -1,0 +1,12 @@
+<group name="sysmon,powershell,command_and_control,mitre_t1071_001">
+  <rule id="100050" level="12">
+    <if_sid>61603</if_sid>
+    <field name="win.eventdata.image" type="pcre2">(?i)(\\powershell\.exe|\\pwsh\.exe)$</field>
+    <field name="win.eventdata.commandLine" type="pcre2">(?i)(Invoke-WebRequest|Invoke-RestMethod|\biwr\b|\birm\b|\bcurl\b|\bwget\b)</field>
+    <field name="win.eventdata.commandLine" type="pcre2">(?i)(HttpBrowser|Opera/|Chrome/1\.0|Metasploit|Nmap|User-Agent.+curl|User-Agent.+wget|User-Agent.+Mozilla/4\.0|\*&lt;\|&gt;\*)</field>
+    <description>Possible C2 over HTTP using PowerShell with anomalous User-Agent (MITRE T1071.001)</description>
+    <mitre>
+      <id>T1071.001</id>
+    </mitre>
+  </rule>
+</group>
