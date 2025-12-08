@@ -15,11 +15,11 @@ con múltiples ejecuciones de `Invoke-WebRequest` y User-Agents no estándar.
 
 ![PowerShell 4104](img/02_powershell_4104.png)
 
-### 3. Actividad de red (Sysmon)
-Sysmon registra la conexión de red saliente iniciada por `powershell.exe`,
-confirmando tráfico HTTP hacia un destino externo.
+### 3. Actividad del proceso (Sysmon - Event 11)
 
-![Sysmon Network](img/03_sysmon_network.png)
+Sysmon registra la creación de un archivo temporal por parte de powershell.exe durante la ejecución de la técnica.
+
+![Sysmon FileCreated](img/03_sysmon_filecreated.png)
 
 ### 4. Detección en Wazuh
 La regla personalizada en Wazuh dispara una alerta correlacionando
