@@ -46,7 +46,7 @@ Antes de cualquier conexión web existe una resolución DNS. Este evento permite
 
 Este evento confirma definitivamente la **comunicación de red real**. Demuestra que el proceso no solo se ejecutó, sino que **estableció comunicación HTTP con un destino externo.** 
 
----
+
 
 ## **PowerShell – Windows Event Log**
 
@@ -76,7 +76,7 @@ Para complementar la visibilidad en host, capturamos tráfico de red durante la 
     - **Ejecuciones `Invoke-WebRequest` desde PowerShell**
 - El tráfico utiliza **User-Agents no estándar**, lo cual es consistente con técnicas de **Command and Control vía HTTP**.
 
----
+
 
 ## **Correlación**
 
@@ -93,7 +93,7 @@ Wazuh **sí levantó una alerta**, pero no exactamente por la técnica que estab
 Wazuh detectó **la consecuencia de la ejecución**, no la comunicación HTTP usada como canal de C2 (**T1071.001**). Esa técnica quedó clara recién cuando correlamos varias fuentes juntas (host + PowerShell + red), pero no porque existiera una regla específica que la identifique de forma directa.
 
 ## Regla Sigma
-https://github.com/limitles22/Detection-Engineering-Lab/blob/main/sigma_t1071_001.yml
+https://github.com/limitles22/Detection-Engineering-Lab/blob/main/T1071.001/sigma_t1071_001.yml
 
 Esta regla Sigma apunta a un comportamiento bastante típico pero fácil de pasar por alto: **PowerShell usando HTTP con User-Agents raros**. No busca una herramienta específica ni una URL concreta, sino la **combinación peligrosa**: PowerShell ejecutando comandos web (`Invoke-WebRequest`, `iwr`, `curl`, etc.) y, además, setear User-Agents que no son normales para scripts legítimos. La idea es detectar **comunicación de C2 camuflada como tráfico web común**, justo lo que define T1071.001. Es una regla pensada para dar **visibilidad temprana**
 
