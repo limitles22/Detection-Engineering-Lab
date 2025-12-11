@@ -122,3 +122,67 @@ Este evento, presente en el registro clásico "Windows PowerShell", registra cu�
 ### IDs de evento 800 y 4103: Ejecución de Pipeline y Carga de Módulos
 El evento 800 (Clásico) y el 4103 (Operativo) ofrecen visibilidad granular sobre qué partes específicas de un script se están ejecutando y qué módulos se están cargando en la sesión.
 * **Observación del Laboratorio:** Se observó la carga del módulo `AtomicTestHarnesses` y la ejecución secuencial de sus funciones (`Out-ATHPowerShell...`). El evento 800 actuó como una capa de redundancia valiosa, capturando detalles de la ejecución del pipeline que complementan la visión del Script Block Logging.
+
+---
+
+## 6. Lógica de Detección (Sigma Rules)
+
+Para este laboratorio, se desarrollaron dos reglas de detección clave. La primera se enfoca en el **mecanismo de evasión** (uso de comandos codificados) y la segunda se enfoca en la **acción real** (el contenido del script desofuscado), proporcionando una cobertura integral (Defense in Depth).
+
+### 6.1 Detección de Ejecución Ofuscada (Mecanismo de Evasión)
+Esta regla busca en la línea de comandos el parámetro que indica la codificación Base64, el primer paso en la evasión.
+
+```yaml
+title: PowerShell Encoded Command Execution
+id: detect-ps-encoded-cmd
+status: experimental
+description: Detects PowerShell execution using the EncodedCommand parameter (including short variations like -Enc or -E). Alerts on the attempt to hide the command.
+logsource:
+    category: process_creation
+    product: windows
+detection:
+    selection:
+        Image|endswith:
+            - '\powershell.exe'
+            - '\pwsh.exe'
+        CommandLine|contains:
+            - ' -EncodedCommand '
+            - ' -Enc '
+            - ' -E '  # Short version used in the lab
+    condition: selection
+level: medium
+tags:
+    - attack.execution
+    - attack.t1059.001
+    - attack.defense_evasion
+    - attack.t1027
+```
+## 6.2 Detección de Payload Desofuscado (Alta Fidelidad)
+Esta regla se enfoca en el contenido decodificado que se encuentra en el Evento 4104. Busca comandos altamente sospechosos (descarga, ejecución en memoria, uso del módulo del laboratorio) que confirman la acción maliciosa.
+
+```yaml
+title: High-Fidelity PowerShell Payload Detection (EID 4104)
+id: detect-critical-ps-payload
+status: experimental
+description: Detects highly suspicious keywords (Downloaders, Obfuscation tools) inside the Script Block log (EID 4104). This rule is effective against T1059.001, payload delivery, and ignores CLI obfuscation.
+logsource:
+    product: windows
+    service: powershell
+    definition: 'Script Block Logging (EID 4104) is REQUIRED'
+detection:
+    selection:
+        EventID: 4104
+        ScriptBlockText|contains:
+            - 'Invoke-WebRequest'
+            - 'IEX'
+            - 'DownloadString'
+            - 'FromBase64String'
+            - 'AtomicTestHarnesses' # Específico del módulo emulado
+    condition: selection
+level: critical
+tags:
+    - attack.execution
+    - attack.t1059.001
+    - attack.delivery
+    - attack.impact
+```
