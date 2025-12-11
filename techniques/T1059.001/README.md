@@ -96,3 +96,29 @@ Para la segunda prueba, se codificó una instrucción similar en Base64 para ocu
 ```powershell
 powershell.exe -ExecutionPolicy Bypass -C "$RequiredModule = Get-Module -Name AtomicTestHarnesses -ListAvailable; if (-not $RequiredModule) {Install-Module -Name AtomicTestHarnesses -Scope CurrentUser -Force}; ; Out-ATHPowerShellCommandLineParameter -CommandLineSwitchType Hyphen -EncodedCommandParamVariation E -Execute -ErrorAction Stop" 
 ```
+---
+## 5. Fuentes de Recopilación y Análisis
+
+*Nota: Esta sección detalla las fuentes de registro específicas utilizadas para reconstruir el ataque, explicando el valor defensivo de cada una según los estándares de la industria.*
+
+### ID de evento de PowerShell Operativo 4104: Registro de Bloques de Scripts
+Diseñado para capturar el contenido real del código que el motor de PowerShell procesa, este evento es la fuente de verdad definitiva contra la ofuscación. Mientras que la línea de comandos puede ocultar la intención mediante Base64 (`-EncodedCommand`), el registro de bloques de scripts captura el código **desofuscado** justo antes de la ejecución.
+* **Observación del Laboratorio:** Independientemente de si se usó la variante en texto claro o la ofuscada, este evento reveló el script completo de `AtomicTestHarnesses`, exponiendo la lógica de descarga `Invoke-WebRequest` que permanecía oculta en otros logs.
+
+### ID de evento de Sysmon 1 y Seguridad 4688: Creación de Procesos
+La monitorización de la creación de procesos es fundamental para entender la jerarquía (quién ejecutó qué) y los argumentos de línea de comandos. Sysmon ID 1 enriquece esta data con hashes y detalles del proceso padre.
+* **Observación del Laboratorio (Evasión):** Se identificó el uso de argumentos codificados (`-EncodedCommand`) para evadir firmas básicas de línea de comandos.
+* **Observación del Laboratorio (Compilación):** Se detectó una cadena de ejecución anómala donde PowerShell invocó al compilador de C# (`csc.exe`). Esto indica una técnica de **"Compile After Delivery"**, donde el atacante compila herramientas ofensivas directamente en la memoria o disco de la víctima.
+
+### ID de evento de Sysmon 11: Creación de Archivos
+Los adversarios a menudo tocan el disco para establecer persistencia, compilar herramientas o verificar el entorno. Monitorear qué archivos crea `powershell.exe` en directorios temporales es una técnica de detección de alta fidelidad.
+* **Observación A (Payloads Ofensivos):** Se detectó la escritura de librerías DLL con nombres aleatorios (ej: `gwvvvje0.dll`) en carpetas `Temp`. Esto correlaciona directamente con la actividad del compilador `csc.exe` observada, confirmando que el script "dejó caer" (dropped) binarios compilados.
+* **Observación B (Sondeo de Políticas):** Se registraron archivos con el patrón `__PSScriptPolicyTest_*.ps1`. Estos son artefactos efímeros generados legítimamente por el motor de PowerShell para autoevaluar si existen restricciones de seguridad como **AppLocker** o **Constrained Language Mode (CLM)** activas antes de ejecutar el código.
+
+### ID de evento de PowerShell Clásico 400: Ciclo de Vida del Motor
+Este evento, presente en el registro clásico "Windows PowerShell", registra cuándo se inicia o detiene el motor de PowerShell. Es una fuente de datos crítica para detectar **Ataques de Degradación (Downgrade Attacks)**. Los adversarios a menudo intentan forzar el uso de PowerShell versión 2.0 para evitar las protecciones de seguridad modernas (como AMSI y el registro 4104).
+* **Observación del Laboratorio:** El evento confirmó que la ejecución se realizó bajo una versión moderna del motor (EngineVersion 5.1), validando que los controles de seguridad estaban activos.
+
+### IDs de evento 800 y 4103: Ejecución de Pipeline y Carga de Módulos
+El evento 800 (Clásico) y el 4103 (Operativo) ofrecen visibilidad granular sobre qué partes específicas de un script se están ejecutando y qué módulos se están cargando en la sesión.
+* **Observación del Laboratorio:** Se observó la carga del módulo `AtomicTestHarnesses` y la ejecución secuencial de sus funciones (`Out-ATHPowerShell...`). El evento 800 actuó como una capa de redundancia valiosa, capturando detalles de la ejecución del pipeline que complementan la visión del Script Block Logging.
