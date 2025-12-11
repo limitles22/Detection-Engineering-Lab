@@ -148,7 +148,7 @@ detection:
         CommandLine|contains:
             - ' -EncodedCommand '
             - ' -Enc '
-            - ' -E '  # Short version used in the lab
+            - ' -E '  
     condition: selection
 level: medium
 tags:
@@ -177,7 +177,7 @@ detection:
             - 'IEX'
             - 'DownloadString'
             - 'FromBase64String'
-            - 'AtomicTestHarnesses' # Específico del módulo emulado
+            - 'AtomicTestHarnesses' 
     condition: selection
 level: critical
 tags:
