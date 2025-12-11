@@ -43,8 +43,7 @@ El foco está en comparar:
 **Telemetría habilitada**
 
 - **Sysmon (config SwiftOnSecurity)**  
-  - Event ID 1: Process Creation  
-  - Event ID 3: Network Connection  
+  - Event ID 1: Process Creation    
   - Event ID 11: File Create
 
 - **PowerShell Operational Logs**  
@@ -60,19 +59,19 @@ El foco está en comparar:
 
 ```mermaid
 graph TD
-    A[Ubuntu Server<br>CALDERA C2] -->|Tareas C2| B[Windows 10<br>Sandcat Agent]
+    A[Ubuntu Server\nCALDERA C2] -->|Tareas C2| B[Windows 10\nSandcat Agent]
     B -->|Ejecuta| C[PowerShell.exe]
-    C --> D[-Command<br>(Texto Claro)]
-    C --> E[-EncodedCommand<br>(Base64)]
-    D -->|Logs| F[Sysmon + Event Logs<br>(4688, 4104)]
+    C --> D[-Command\n(Texto Claro)]
+    C --> E[-EncodedCommand\n(Base64)]
+    D -->|Logs| F[Sysmon + Event Logs\n(4688, 4104)]
     E -->|Logs| F
     F -->|Análisis| G[Analista SOC]
     
     %% High-contrast styles
-    style A fill:#1E3A8A,stroke:#ffffff,stroke-width:1px,color:#ffffff
-    style B fill:#1E40AF,stroke:#ffffff,stroke-width:1px,color:#ffffff
-    style C fill:#0F766E,stroke:#ffffff,stroke-width:1px,color:#ffffff
-    style D fill:#15803D,stroke:#ffffff,stroke-width:1px,color:#ffffff
-    style E fill:#166534,stroke:#ffffff,stroke-width:1px,color:#ffffff
-    style F fill:#7C2D12,stroke:#ffffff,stroke-width:1px,color:#ffffff
-    style G fill:#4C1D95,stroke:#ffffff,stroke-width:1px,color:#ffffff
+    style A fill:#1E3A8A,stroke:#ffffff,stroke-width:1px
+    style B fill:#1E40AF,stroke:#ffffff,stroke-width:1px
+    style C fill:#0F766E,stroke:#ffffff,stroke-width:1px
+    style D fill:#15803D,stroke:#ffffff,stroke-width:1px
+    style E fill:#166534,stroke:#ffffff,stroke-width:1px
+    style F fill:#7C2D12,stroke:#ffffff,stroke-width:1px
+    style G fill:#4C1D95,stroke:#ffffff,stroke-width:1px
