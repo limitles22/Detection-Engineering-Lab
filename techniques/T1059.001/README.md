@@ -186,3 +186,31 @@ tags:
     - attack.delivery
     - attack.impact
 ```
+---
+## 7. Mitigaciones y Hardening
+
+Para reducir la superficie de ataque explotada en este laboratorio y neutralizar la técnica **T1059.001**, se recomiendan los siguientes controles de seguridad de alta fidelidad:
+
+### 7.1. Controles de Ejecución y Motor de Scripting
+
+Estos controles impiden la ejecución de código arbitrario y neutralizan las técnicas de evasión observadas (ofuscación y compilación).
+
+* **Antimalware Scan Interface (AMSI):** Asegurar que AMSI esté activo y en buen estado es la primera defensa contra PowerShell ofuscado y fileless. AMSI inspecciona el código justo antes de ser ejecutado por el motor de scripting, permitiendo que el EDR/Antivirus vea el código real incluso antes de que se genere el Evento 4104.
+* **Constrained Language Mode (CLM):** Restringir PowerShell a CLM. Esto bloquea la invocación de APIs de bajo nivel de .NET (`Add-Type`, etc.), neutralizando así la capacidad de compilar código C# al vuelo (`csc.exe`) y limitando la ofuscación compleja.
+* **Application Control (AppLocker/WDAC):** Implementar políticas para restringir la ejecución de *utilidades duales* (`csc.exe`, `cvtres.exe`) cuando son lanzadas por procesos no confiables (como PowerShell o scripts en directorios temporales).
+
+### 7.2. Logging y Visibilidad (Hardening de Telemetría)
+
+El logging es la mitigación más efectiva contra la ofuscación. Estos controles aseguran que la telemetría de seguridad pueda capturar el contenido real del script.
+
+* **Habilitar Script Block Logging (EID 4104):** Es la mitigación directa contra la ofuscación (`-EncodedCommand`), asegurando que todo el código sea visible. Debe habilitarse mediante GPO (`Turn on PowerShell Script Block Logging`).
+* **Habilitar Module Logging (EID 4103):** Proporciona visibilidad sobre las funciones específicas de los módulos cargados (como `AtomicTestHarnesses`), útil para trazar qué comandos se hacen disponibles para el atacante.
+* **Monitoreo de Logs Clásicos (EID 400):** Mantener el monitoreo del Evento 400 para detectar intentos de **Ataque de Degradación (Downgrade Attack)** a PowerShell v2.0, eludiendo los logs de AMSI y 4104.
+
+### 7.3. Detección Comportamental
+
+Aplicar controles para detectar las "huellas" que deja el ataque en el sistema de archivos.
+
+* **Monitoreo de Carpetas Temporales:** Alerta sobre la creación de archivos binarios (`.dll`, `.exe`) o scripts en directorios de usuario o carpetas `Temp` por parte de procesos de *scripting* (Powershell, cscript), tal como se observó con la creación de la DLL maliciosa y los archivos de sondeo de políticas.
+
+---
