@@ -34,7 +34,7 @@ El foco está en comparar:
 
 | Componente        | Detalle                     |
 |-------------------|-----------------------------|
-| Servidor C2       | CALDERA 5.x (Ubuntu)    |
+| Servidor C2       | CALDERA 5.x (Ubuntu Sever)  |
 | Agente            | Sandcat (Go)                |
 | Equipo Víctima    | Windows 10 Enterprise       |
 | Antivirus         | Defender desactivado        |
@@ -60,7 +60,7 @@ El foco está en comparar:
 
 ```mermaid
 graph TD
-    A[Kali / CALDERA C2] -->|C2 Traffic| B(Windows 10 / Sandcat Agent)
+    A[Ubuntu Server / CALDERA C2] -->|C2 Traffic| B(Windows 10 / Sandcat Agent)
     B -->|Executes| C{PowerShell.exe}
     C -->|Variant A| D[-Command]
     C -->|Variant B| E[-EncodedCommand]
