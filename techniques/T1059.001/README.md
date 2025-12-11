@@ -59,14 +59,14 @@ El foco está en comparar:
 
 ```mermaid
 graph TD
-    A[Ubuntu Server\nCALDERA C2] -->|Tareas C2| B[Windows 10\nSandcat Agent]
+    A[Ubuntu Server<br>CALDERA C2] -->|Tareas C2| B[Windows 10<br>Sandcat Agent]
     B -->|Ejecuta| C[PowerShell.exe]
-    C --> D[-Command\n(Texto Claro)]
-    C --> E[-EncodedCommand\n(Base64)]
-    D -->|Logs| F[Sysmon + Event Logs\n(4688, 4104)]
+    C --> D[-Command<br>(Texto Claro)]
+    C --> E[-EncodedCommand<br>(Base64)]
+    D -->|Logs| F[Sysmon + Event Logs<br>(4688, 4104)]
     E -->|Logs| F
     F -->|Análisis| G[Analista SOC]
-    
+
     %% High-contrast styles
     style A fill:#1E3A8A,stroke:#ffffff,stroke-width:1px
     style B fill:#1E40AF,stroke:#ffffff,stroke-width:1px
@@ -75,3 +75,4 @@ graph TD
     style E fill:#166534,stroke:#ffffff,stroke-width:1px
     style F fill:#7C2D12,stroke:#ffffff,stroke-width:1px
     style G fill:#4C1D95,stroke:#ffffff,stroke-width:1px
+
