@@ -60,14 +60,19 @@ El foco está en comparar:
 
 ```mermaid
 graph TD
-    A[Ubuntu Server / CALDERA C2] -->|C2 Traffic| B(Windows 10 / Sandcat Agent)
-    B -->|Executes| C{PowerShell.exe}
-    C -->|Variant A| D[-Command]
-    C -->|Variant B| E[-EncodedCommand]
-    D -->|Logs| F[Sysmon + Event Logs]
+    A[Ubuntu Server<br>CALDERA C2] -->|Tareas C2| B[Windows 10<br>Sandcat Agent]
+    B -->|Ejecuta| C[PowerShell.exe]
+    C --> D[-Command<br>(Texto Claro)]
+    C --> E[-EncodedCommand<br>(Base64)]
+    D -->|Logs| F[Sysmon + Event Logs<br>(4688, 4104)]
     E -->|Logs| F
-    F -->|Analysis| G[Analista SOC]
+    F -->|Análisis| G[Analista SOC]
     
-    style A fill:#ff9999,stroke:#333,stroke-width:1.5px
-    style B fill:#99ccff,stroke:#333,stroke-width:1.5px
-    style G fill:#99ff99,stroke:#333,stroke-width:1.5px
+    %% High-contrast styles
+    style A fill:#1E3A8A,stroke:#ffffff,stroke-width:1px,color:#ffffff
+    style B fill:#1E40AF,stroke:#ffffff,stroke-width:1px,color:#ffffff
+    style C fill:#0F766E,stroke:#ffffff,stroke-width:1px,color:#ffffff
+    style D fill:#15803D,stroke:#ffffff,stroke-width:1px,color:#ffffff
+    style E fill:#166534,stroke:#ffffff,stroke-width:1px,color:#ffffff
+    style F fill:#7C2D12,stroke:#ffffff,stroke-width:1px,color:#ffffff
+    style G fill:#4C1D95,stroke:#ffffff,stroke-width:1px,color:#ffffff
