@@ -75,4 +75,24 @@ graph TD
     style E fill:#166534,stroke:#ffffff,stroke-width:1px
     style F fill:#7C2D12,stroke:#ffffff,stroke-width:1px
     style G fill:#4C1D95,stroke:#ffffff,stroke-width:1px
+```
+---
 
+## 4. Ejecución de la Técnica
+
+Para este ejercicio se utilizó el framework **Atomic Test Harnesses** invocado a través de Caldera. Esto permite generar variaciones controladas de argumentos de línea de comandos.
+
+### 4.1 Variante A: Ejecución en Texto Claro (`-Command`)
+Se ejecutó un script complejo que carga módulos en memoria. Esta ejecución genera mucho ruido y múltiples artefactos (como la descarga del módulo).
+
+**Comando Ejecutado:**
+```powershell
+powershell.exe -ExecutionPolicy Bypass -C "$RequiredModule = Get-Module -Name AtomicTestHarnesses -ListAvailable; if (-not $RequiredModule) {Install-Module -Name AtomicTestHarnesses -Scope CurrentUser -Force}; ; Out-ATHPowerShellCommandLineParameter -CommandLineSwitchType Hyphen -CommandParamVariation C -Execute -ErrorAction Stop"
+```
+### 4.2 Variante B: Ejecución Ofuscada (-EncodedCommand)
+Para la segunda prueba, se codificó una instrucción similar en Base64 para ocultar la lógica del script.
+
+**Comando Ejecutado:**
+```powershell
+powershell.exe -ExecutionPolicy Bypass -C "$RequiredModule = Get-Module -Name AtomicTestHarnesses -ListAvailable; if (-not $RequiredModule) {Install-Module -Name AtomicTestHarnesses -Scope CurrentUser -Force}; ; Out-ATHPowerShellCommandLineParameter -CommandLineSwitchType Hyphen -EncodedCommandParamVariation E -Execute -ErrorAction Stop" 
+```
