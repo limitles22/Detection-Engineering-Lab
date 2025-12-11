@@ -1,76 +1,71 @@
-# T1059.001 – PowerShell
+# Análisis de Técnica MITRE ATT&CK: T1059.001 (PowerShell)
 
-## Descripción
+![Status](https://img.shields.io/badge/Status-Completed-success)
+![Severity](https://img.shields.io/badge/Severity-High-red)
+![Data Sources](https://img.shields.io/badge/Data_Sources-Sysmon_|_PowerShell-blue)
 
-Esta carpeta documenta la emulación y el análisis de la técnica  
-**T1059.001 – Command and Scripting Interpreter: PowerShell** del framework
-MITRE ATT&CK.
+Emulación y análisis defensivo de la técnica **T1059.001 – Command and Scripting Interpreter: PowerShell** utilizando **CALDERA** en un entorno Windows.
 
-La definición formal de la técnica puede consultarse en:
-https://attack.mitre.org/techniques/T1059/001/
-
-El laboratorio se centra en observar el comportamiento generado por la
-ejecución de PowerShell en un sistema Windows y en extraer conclusiones
-desde una perspectiva defensiva.
+Referencia oficial: https://attack.mitre.org/techniques/T1059/001/
 
 ---
 
-## Objetivo del laboratorio
+## 1. Objetivo del Ejercicio
 
-- Emular la técnica T1059.001 en un entorno controlado
-- Analizar la telemetría y evidencia generada en el endpoint
-- Identificar oportunidades de detección basadas en comportamiento
-- Documentar conclusiones relevantes para seguridad y detección
+Este laboratorio busca:
 
----
+- Emular la técnica T1059.001 mediante:
+  - `-Command` (texto claro)
+  - `-EncodedCommand` (ofuscado en Base64)
+- Evaluar la visibilidad generada por cada variante.
+- Analizar telemetría crítica para detecciones: Sysmon, Event 4688 y Event 4104.
+- Identificar oportunidades de detección, correlación y hardening.
 
-## Emulación de la técnica
-
-La técnica es emulada utilizando **CALDERA** sobre un sistema Windows.
-
-Los detalles de la ejecución, incluyendo la habilidad utilizada y los
-parámetros de la emulación, se documentan en la carpeta `emulation/`.
+El foco está en comparar:  
+**CommandLine visible vs. CommandLine ofuscado**, destacando el rol del **Event ID 4104** en la deofuscación.
 
 ---
 
-## Evidencia observada
+## 2. Entorno de Pruebas
 
-Durante la emulación se observa evidencia asociada al uso de PowerShell,
-incluyendo:
+**Infraestructura**
 
-- Creación de procesos relacionados con PowerShell
-- Parámetros de línea de comando utilizados
-- Eventos de ejecución y logging
-- Relación proceso padre / proceso hijo
+| Componente        | Detalle                     |
+|-------------------|-----------------------------|
+| Servidor C2       | CALDERA 5.x (Ubuntu)    |
+| Agente            | Sandcat (Go)                |
+| Equipo Víctima    | Windows 10 Enterprise       |
+| Antivirus         | Defender desactivado        |
+| Red               | HTTP entre CALDERA y agente |
 
-El análisis detallado de la evidencia se encuentra documentado en la
-carpeta `evidence/`.
+**Telemetría habilitada**
 
----
+- **Sysmon (config SwiftOnSecurity)**  
+  - Event ID 1: Process Creation  
+  - Event ID 3: Network Connection  
+  - Event ID 11: File Create
 
-## Detección
+- **PowerShell Operational Logs**  
+  - Event ID 4104: Script Block Logging  
+  - Event ID 4103: Module Logging
 
-A partir de la evidencia observada se desarrollan ideas de detección
-basadas en comportamiento y contexto.
-
-Estas ideas se presentan de forma conceptual y deben ser adaptadas antes
-de ser utilizadas en entornos productivos.  
-El detalle se encuentra en la carpeta `detection/`.
-
----
-
-## Mitigaciones
-
-Se describen mitigaciones y controles defensivos relevantes asociados a
-esta técnica, enfocados en hardening y visibilidad.
-
-Más información en la carpeta `mitigations/`.
+- **Windows Security Log**  
+  - Event ID 4688: Process Creation
 
 ---
 
-## Conclusiones
+## 3. Arquitectura del Ejercicio
 
-Las observaciones y conclusiones finales del laboratorio se documentan en
-la carpeta `conclusions/`.
-
----
+```mermaid
+graph TD
+    A[Kali / CALDERA C2] -->|C2 Traffic| B(Windows 10 / Sandcat Agent)
+    B -->|Executes| C{PowerShell.exe}
+    C -->|Variant A| D[-Command]
+    C -->|Variant B| E[-EncodedCommand]
+    D -->|Logs| F[Sysmon + Event Logs]
+    E -->|Logs| F
+    F -->|Analysis| G[Analista SOC]
+    
+    style A fill:#ff9999,stroke:#333,stroke-width:1.5px
+    style B fill:#99ccff,stroke:#333,stroke-width:1.5px
+    style G fill:#99ff99,stroke:#333,stroke-width:1.5px
