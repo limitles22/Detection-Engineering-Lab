@@ -1,7 +1,9 @@
 # Análisis de Técnica MITRE ATT&CK: T1059.001 (PowerShell)
 
 ![Status](https://img.shields.io/badge/Status-Completed-success)
+
 ![Severity](https://img.shields.io/badge/Severity-High-red)
+
 ![Data Sources](https://img.shields.io/badge/Data_Sources-Sysmon_|_PowerShell-blue)
 
 Emulación y análisis defensivo de la técnica **T1059.001 – Command and Scripting Interpreter: PowerShell** utilizando **CALDERA** en un entorno Windows.
